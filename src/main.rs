@@ -1,3 +1,5 @@
+use std::intrinsics::sinf32;
+
 use esp_idf_hal::delay::{Delay, FreeRtos};
 use esp_idf_hal::gpio::{self, OutputPin, PinDriver};
 use esp_idf_hal::prelude::*;
@@ -29,7 +31,6 @@ type BoxedDisplayDriver<'a> = Box<
     >,
 >;
 
-/// Test Function : will be removed later
 fn draw<I: WriteOnlyDataCommand, D: DisplayDefinition>(
     display: &mut Gc9a01<I, D, BufferedGraphics<D>>,
     tick: u32,
@@ -76,6 +77,11 @@ fn draw<I: WriteOnlyDataCommand, D: DisplayDefinition>(
     .into_styled(style)
     .draw(display)
     .unwrap();
+
+    Circle::new(Point::new(x, y), cdiameter as u32)
+        .into_styled(style)
+        .draw(display)
+        .unwrap();
 }
 
 fn main() {
@@ -143,6 +149,6 @@ fn main() {
         draw(&mut display_driver, tick);
         display_driver.flush().ok();
         tick += 1;
-        FreeRtos::delay_ms(2000);
+        FreeRtos::delay_ms(2000)
     }
 }
